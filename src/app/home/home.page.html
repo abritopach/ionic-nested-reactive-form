@@ -1,14 +1,57 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
-      Ionic Blank
+      Ionic Nested Reactive Form
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
-  </div>
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="userProfileForm" novalidate (ngSubmit)="userProfileFormSubmit()">
+        <ion-list>
+          <ion-item-divider color="primary">User Profile Info</ion-item-divider>
+          <ion-item [class.has-error]="userProfileForm.get('name').hasError('required') && userProfileForm.get('name').touched">
+              <ion-label position="floating">Name *</ion-label>
+              <ion-input type="text" formControlName="name"></ion-input>
+          </ion-item>
+          <ion-item lines="none" *ngIf="userProfileForm.get('name').hasError('required') && userProfileForm.get('name').touched">
+              <div class="error-message">
+                  This field is required.
+              </div>
+          </ion-item>
+
+          <div formArrayName="addresses">
+            <div *ngFor="let address of userProfileForm.controls.addresses.controls; let i=index">
+              <ion-item-divider>Address {{i + 1}}</ion-item-divider>
+              <div [formGroupName]="i">
+                <ion-item>
+                  <ion-label position="floating">Street *</ion-label>
+                  <ion-input type="text" formControlName="street"></ion-input>
+                </ion-item>
+                <div formArrayName="phonenumber">
+                  <div *ngFor="let number of userProfileForm.controls.addresses.controls[i].controls.phonenumber.controls; let j=index">
+                    <ion-item [formGroupName]="j" >
+                        <ion-label position="floating">Number *</ion-label>
+                        <ion-input type="text" formControlName="number"></ion-input>
+                    </ion-item>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-list>
+        <ion-row no-padding justify-content-center>
+            <ion-col col-auto text-right>
+              <ion-button [disabled]='!userProfileForm.valid' type="submit" fill="clear" size="small" color="primary">
+              <ion-icon name='send' slot="start"></ion-icon>
+              Send
+              </ion-button>
+            </ion-col>
+        </ion-row>
+        <pre>form value: <br>{{userProfileForm.value | json}}</pre>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
