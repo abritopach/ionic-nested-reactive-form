@@ -24,21 +24,37 @@
 
           <div formArrayName="addresses">
             <div *ngFor="let address of userProfileForm.controls.addresses.controls; let i=index">
-              <ion-item-divider>Address {{i + 1}}</ion-item-divider>
-              <div [formGroupName]="i">
-                <ion-item>
-                  <ion-label position="floating">Street *</ion-label>
-                  <ion-input type="text" formControlName="street"></ion-input>
-                </ion-item>
-                <div formArrayName="phonenumber">
-                  <div *ngFor="let number of userProfileForm.controls.addresses.controls[i].controls.phonenumber.controls; let j=index">
-                    <ion-item [formGroupName]="j" >
-                        <ion-label position="floating">Number *</ion-label>
-                        <ion-input type="text" formControlName="number"></ion-input>
+              <ion-card>
+                <ion-card-content>
+                  <ion-item-divider>Address {{i + 1}}</ion-item-divider>
+                  <div [formGroupName]="i">
+                    <ion-item [class.has-error]="getStreet(i).hasError('required') && getStreet(i).touched">
+                      <ion-label position="floating">Street *</ion-label>
+                      <ion-input type="text" formControlName="street"></ion-input>
                     </ion-item>
+                    <ion-item lines="none" *ngIf="getStreet(i).hasError('required') && getStreet(i).touched">
+                      <div class="error-message">
+                          This field is required.
+                      </div>
+                    </ion-item>
+                    <div formArrayName="phonenumber">
+                      <div *ngFor="let number of userProfileForm.controls.addresses.controls[i].controls.phonenumber.controls; let j=index">
+                        <div [formGroupName]="j">
+                        <ion-item [class.has-error]="getNumber(i, j).hasError('required') && getNumber(i, j).touched">
+                            <ion-label position="floating">Number *</ion-label>
+                            <ion-input type="text" formControlName="number"></ion-input>
+                        </ion-item>
+                        <ion-item lines="none" *ngIf="getNumber(i, j).hasError('required') && getNumber(i, j).touched">
+                          <div class="error-message">
+                              This field is required.
+                          </div>
+                        </ion-item>
+                      </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </ion-card-content>
+              </ion-card>
             </div>
           </div>
         </ion-list>
@@ -51,6 +67,7 @@
             </ion-col>
         </ion-row>
         <pre>form value: <br>{{userProfileForm.value | json}}</pre>
+        <pre>form valid: <br>{{userProfileForm.valid | json}}</pre>
       </form>
     </ion-card-content>
   </ion-card>

@@ -12,7 +12,7 @@ export class HomePage implements OnInit {
 
   userProfile = {
     name: 'abc',
-    addressess: [
+    addresses: [
       {street: 'nehru nagar', phonenumber: [{number: 9845612378}, {number: 1589635015}]},
       {street: 'gandhi nagar', phonenumber: [{number: 7412563474 }, {number: 1578963248}]
     }]
@@ -24,30 +24,32 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.userProfileForm.patchValue(this.userProfile);
-    this.userProfileForm.controls.addresses = this.formBuilder.array(this.userProfile.addressess.map(address => {
+    this.userProfileForm.controls.addresses = this.formBuilder.array(this.userProfile.addresses.map(address => {
       const group = this.initAddress();
 
-      console.log('group', group);
+      const phonesControl = group.get('phonenumber') as FormArray;
+      console.log('phonesControl', phonesControl);
+
+      // phonesControl.removeAt(0);
+      address.phonenumber.map(phone => {
+        console.log('phone', phone);
+        phonesControl.push(
+          this.formBuilder.group(phone)
+        );
+      });
 
       group.patchValue(address);
 
-      console.log('group', group.value);
-
-      const phones = address.phonenumber.map(phone => {
-        const phoneNumber = this.initNumber();
-        phoneNumber.patchValue(phone);
-        return phoneNumber;
-      });
-
-      console.log(phones);
-
-      group.patchValue({phonenumber: phones});
-
-      console.log('group', group.value);
+      console.log('group', group);
 
       return group;
     }));
     console.log(this.userProfileForm.value);
+
+    console.log(this.getStreet(0));
+    console.log('number1', this.getNumber(0, 0));
+    console.log('number2', this.getNumber(0, 1));
+
   }
 
   createForm() {
@@ -61,7 +63,6 @@ export class HomePage implements OnInit {
   initAddress() {
     return this.formBuilder.group({
       street: ['', Validators.required],
-      postcode: [''],
       phonenumber: this.formBuilder.array([this.initNumber()])
     });
   }
@@ -70,6 +71,19 @@ export class HomePage implements OnInit {
     return this.formBuilder.group({
       number: ['', Validators.required]
     });
+  }
+
+  userProfileFormSubmit() {
+    console.log(this.userProfileForm.value);
+  }
+
+  getStreet(index) {
+    return ((this.userProfileForm.get('addresses') as FormArray).at(index) as FormGroup).get('street');
+  }
+
+  getNumber(index1, index2) {
+    return ((((this.userProfileForm.get('addresses') as FormArray).at(index1) as FormGroup)
+    .get('phonenumber') as FormArray).at(index2) as FormGroup).get('number');
   }
 
 }
