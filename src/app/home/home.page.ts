@@ -94,4 +94,14 @@ export class HomePage implements OnInit {
     control.removeAt(i);
   }
 
+  addNumber(address) {
+    const control = address.controls.phonenumber as FormArray;
+    control.push(this.initNumber());
+  }
+
+  removeNumber(address, index) {
+    const control = address.controls.phonenumber as FormArray;
+    control.removeAt(index);
+  }
+
 }

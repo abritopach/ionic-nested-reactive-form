@@ -64,6 +64,9 @@
                         <ion-item [class.has-error]="getNumber(i, j).hasError('required') && getNumber(i, j).touched">
                             <ion-label position="floating">Number *</ion-label>
                             <ion-input type="number" formControlName="number"></ion-input>
+                            <ion-button slot="end" color="danger" fill="clear" (click)="removeNumber(address, j)">
+                                <ion-icon slot="icon-only" name="close"></ion-icon>
+                            </ion-button>
                         </ion-item>
                         <ion-item lines="none" *ngIf="getNumber(i, j).hasError('required') && getNumber(i, j).touched">
                           <div class="error-message">
@@ -74,6 +77,12 @@
                       </div>
                     </div>
                   </div>
+                  <ion-item lines="none">
+                    <ion-button slot="end" color="primary" fill="clear" (click)="addNumber(address)">
+                      Add alternate number
+                      <ion-icon name="add-circle-outline"></ion-icon>
+                    </ion-button>
+                  </ion-item>
                 </ion-card-content>
               </ion-card>
             </div>
