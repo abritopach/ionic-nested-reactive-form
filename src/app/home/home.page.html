@@ -12,6 +12,12 @@
       <form [formGroup]="userProfileForm" novalidate (ngSubmit)="userProfileFormSubmit()">
         <ion-list>
           <ion-item-divider color="primary">User Profile Info</ion-item-divider>
+          <br>
+          <ion-item-divider color="light">
+            <ion-label>
+              General
+            </ion-label>
+          </ion-item-divider>
           <ion-item [class.has-error]="userProfileForm.get('name').hasError('required') && userProfileForm.get('name').touched">
               <ion-label position="floating">Name *</ion-label>
               <ion-input type="text" formControlName="name"></ion-input>
@@ -21,12 +27,27 @@
                   This field is required.
               </div>
           </ion-item>
-
+          <br>
+          <ion-item-divider color="light">
+            <ion-label>
+              Adresses
+            </ion-label>
+            <ion-button slot="end" color="primary" fill="clear" (click)="addAddress()">
+                <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-item-divider>
           <div formArrayName="addresses">
-            <div *ngFor="let address of userProfileForm.controls.addresses.controls; let i=index">
+            <div *ngFor="let address of userProfileForm.controls['addresses'].controls; let i=index">
               <ion-card>
                 <ion-card-content>
-                  <ion-item-divider>Address {{i + 1}}</ion-item-divider>
+                  <ion-item-divider>
+                    <ion-label>
+                      Address {{i + 1}}
+                    </ion-label>
+                    <ion-button slot="end" color="danger" fill="clear" (click)="removeAddress(i)">
+                        <ion-icon slot="icon-only" name="trash"></ion-icon>
+                    </ion-button>
+                  </ion-item-divider>
                   <div [formGroupName]="i">
                     <ion-item [class.has-error]="getStreet(i).hasError('required') && getStreet(i).touched">
                       <ion-label position="floating">Street *</ion-label>
@@ -38,11 +59,11 @@
                       </div>
                     </ion-item>
                     <div formArrayName="phonenumber">
-                      <div *ngFor="let number of userProfileForm.controls.addresses.controls[i].controls.phonenumber.controls; let j=index">
+                      <div *ngFor="let number of userProfileForm.controls['addresses'].controls[i].controls.phonenumber.controls; let j=index">
                         <div [formGroupName]="j">
                         <ion-item [class.has-error]="getNumber(i, j).hasError('required') && getNumber(i, j).touched">
                             <ion-label position="floating">Number *</ion-label>
-                            <ion-input type="text" formControlName="number"></ion-input>
+                            <ion-input type="number" formControlName="number"></ion-input>
                         </ion-item>
                         <ion-item lines="none" *ngIf="getNumber(i, j).hasError('required') && getNumber(i, j).touched">
                           <div class="error-message">

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup, FormArray, Form } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -72,7 +72,7 @@ export class HomePage implements OnInit {
   }
 
   userProfileFormSubmit() {
-    console.log(this.userProfileForm.value);
+    console.log(this.userProfileForm.getRawValue());
   }
 
   getStreet(index) {
@@ -82,6 +82,16 @@ export class HomePage implements OnInit {
   getNumber(index1, index2) {
     return ((((this.userProfileForm.get('addresses') as FormArray).at(index1) as FormGroup)
     .get('phonenumber') as FormArray).at(index2) as FormGroup).get('number');
+  }
+
+  addAddress() {
+    const control = this.userProfileForm.controls.addresses as FormArray;
+    control.push(this.initAddress());
+  }
+
+  removeAddress(i: number) {
+    const control = this.userProfileForm.controls.addresses as FormArray;
+    control.removeAt(i);
   }
 
 }
