@@ -8,13 +8,14 @@ import { FormControl, Validators, FormBuilder, FormGroup, FormArray } from '@ang
 })
 export class HomePage implements OnInit {
 
+  currentYear = new Date().getFullYear();
   userProfileForm: FormGroup;
 
   userProfile = {
-    name: 'abc',
+    name: 'Jhon Sky',
     addresses: [
-      {street: 'nehru nagar', phonenumber: [{number: 9845612378}, {number: 1589635015}]},
-      {street: 'gandhi nagar', phonenumber: [{number: 7412563474 }, {number: 1578963248}]
+      {street: 'Calle Bernardino Obregón', phonenumber: [{number: 9845612378}, {number: 1589635015}]},
+      {street: 'Calle Velázquez', phonenumber: [{number: 7412563474 }, {number: 1578963248}]
     }]
   };
 
@@ -24,32 +25,29 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.userProfileForm.patchValue(this.userProfile);
+    // Patch form array addresses.
     this.userProfileForm.controls.addresses = this.formBuilder.array(this.userProfile.addresses.map(address => {
       const group = this.initAddress();
 
-      const phonesControl = group.get('phonenumber') as FormArray;
-      console.log('phonesControl', phonesControl);
-
-      // phonesControl.removeAt(0);
-      address.phonenumber.map(phone => {
-        console.log('phone', phone);
-        phonesControl.push(
-          this.formBuilder.group(phone)
-        );
-      });
+      // Patch form array phones.
+      group.controls.phonenumber = this.formBuilder.array(
+        address.phonenumber.map(phone => {
+          const g = this.initNumber();
+          g.patchValue(phone);
+          return g;
+      }));
 
       group.patchValue(address);
 
-      console.log('group', group);
-
       return group;
     }));
-    console.log(this.userProfileForm.value);
 
+    /*
+    console.log(this.userProfileForm.value);
     console.log(this.getStreet(0));
     console.log('number1', this.getNumber(0, 0));
     console.log('number2', this.getNumber(0, 1));
-
+    */
   }
 
   createForm() {
@@ -57,7 +55,7 @@ export class HomePage implements OnInit {
       name: ['', [Validators.required, Validators.minLength(5)]],
       addresses: this.formBuilder.array([this.initAddress()])
     });
-    console.log(this.userProfileForm.controls.addresses);
+    // console.log(this.userProfileForm.controls.addresses);
   }
 
   initAddress() {
